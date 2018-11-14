@@ -66,7 +66,7 @@ class SpatialSequenceFeature(keras.utils.Sequence):
 
 
 class SpatialDataLoaderFeature:
-    def __init__(self, samples_per_video, width, height, num_workers, use_multiprocessing, log_stream=open("/tmp/null.log", "w"), heavy=False, data_root_path='./jpegs_256/', ucf_list_path='./UCF_list/', ucf_split='01', queue_size=10):
+    def __init__(self, samples_per_video, width, height, num_workers, use_multiprocessing, log_stream=open("/tmp/null.log", "w"), augmenter_level=0, data_root_path='./jpegs_256/', ucf_list_path='./UCF_list/', ucf_split='01', queue_size=10):
         """
         get the mapping and initialize the augmenter
         """
@@ -86,7 +86,7 @@ class SpatialDataLoaderFeature:
         # get video frames
         self.video_frame_count = data_util_.get_video_frame_count()  # name without v_ or .avi and small s
 
-        self.heavy = heavy
+        self.augmenter_level = augmenter_level
 
     def run(self):
         """
@@ -143,7 +143,7 @@ class SpatialDataLoaderFeature:
                                 data_root_path=self.data_root_path,
                                 samples_per_video=self.samples_per_video,
                                 is_training=True,
-                                augmenter=get_training_augmenter(height=self.height, width=self.width, augmenter_level=self.heavy),
+                                augmenter=get_training_augmenter(height=self.height, width=self.width, augmenter_level=self.augmenter_level),
                                 )
         print('==> Training data :', len(loader.sequence.data_to_load), 'videos', file=self.log_stream)
         print('==> Training data :', len(loader.sequence.data_to_load), 'videos')

@@ -19,8 +19,10 @@ note: validation is done by spatialValidationCallback which validates on the giv
 """
 from functools import partial
 
+import frame_dataloader
 import utils.training_utils as eval_globals
 from configs.spatial_configs import *
+from evaluation import legacy_load_model, get_batch_size
 from evaluation.evaluation import *
 from models.spatial_models import *
 from utils import get_augmenter_text
@@ -29,7 +31,7 @@ from utils.drive_manager import DriveManager
 ################################################################################
 """Files, paths & identifier"""
 suffix = ""  # put your name or anything(your crush :3) :D
-experiment_identifier = suffix+("" if suffix =="" else "-")  + get_augmenter_text(augmenter_level) + "-spa-" + model_name + "-" + ("adam" if is_adam else "SGD") + "-" + str(lr) + "-" + ("imnet" if pretrained else "scrat")
+experiment_identifier = suffix + ("" if suffix == "" else "-") + get_augmenter_text(augmenter_level) + "-spa-" + model_name + "-" + ("adam" if is_adam else "SGD") + "-" + str(lr) + "-" + ("imnet" if pretrained else "scrat")
 log_file = "spatial.log"
 log_stream = open("spatial.log", "a")
 h5py_file = "spatial.h5"

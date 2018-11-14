@@ -17,9 +17,6 @@ import tensorflow as tf
 import tqdm
 from tensorflow import keras
 
-import frame_dataloader
-from evaluation import legacy_load_model, get_batch_size
-
 """ Global variables for evaluation """
 num_actions = 101
 workers = min(multiprocessing.cpu_count(), 4)
@@ -72,33 +69,6 @@ def eval_model(model, test_loader, test_video_level_label, testing_samples_per_v
                                                                                         testing_samples_per_video=testing_samples_per_video)
 
     return video_level_loss, video_level_accuracy_1, video_level_accuracy_5, test_video_level_preds
-
-
-""" evaluation from disk (models or pickles) """
-
-
-def eval_model_from_disk(model_path, spatial, testing_samples_per_video=19):
-    """
-    loads a model and applies single validation epoch and prints the metrics
-    """
-    model_restored = legacy_load_model(filepath=model_path, custom_objects={'sparse_categorical_cross_entropy_loss': sparse_categorical_cross_entropy_loss, "acc_top_1": acc_top_1, "acc_top_5": acc_top_5})
-
-    if spatial:
-        data_loader = frame_dataloader.SpatialDataLoader(
-            num_workers=workers, testing_samples_per_video=testing_samples_per_video,
-            width=int(model_restored.inputs[0].shape[1]), height=int(model_restored.inputs[0].shape[2]), batch_size=get_batch_size(model_restored, spatial=True)
-            , use_multiprocessing=False, augmenter_level=False,
-        )
-    else:
-        data_loader = frame_dataloader.MotionDataLoader(
-            num_workers=workers, testing_samples_per_video=testing_samples_per_video,
-            width=int(model_restored.inputs[0].shape[1]), height=int(model_restored.inputs[0].shape[2]), batch_size=get_batch_size(model_restored, spatial=False)
-            , use_multiprocessing=False, augmenter_level=1,
-        )
-
-    train_loader, test_loader, test_video_level_label = data_loader.run()
-    video_level_loss, video_level_accuracy_1, video_level_accuracy_5, test_video_level_preds = eval_model(model_restored, test_loader, test_video_level_label, testing_samples_per_video)
-    print("{} Model validation".format("Spatial" if spatial else "Motion"), "prec@1", video_level_accuracy_1, "prec@5", video_level_accuracy_5, "loss", video_level_loss)
 
 
 def video_level_eval(test_video_level_preds, test_video_level_label, testing_samples_per_video):

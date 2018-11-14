@@ -47,7 +47,7 @@ class DriveManager:
     # check projects directories
     def __init__(self, project_name,
                  personal_dfolder="1sjKuoFGYqURSiCOM-gUQ4iuyx4M0pJxd",  # your folder the code can read and write to it using your own credentials
-                 base_download_dfolder="1B82anWV8Mb4iHYmOp9tIR9aOTlfllwsD",  # my folder..the code have read access to it(public)..don't change this
+                 base_download_dfolder="1B82anWV8Mb4iHYmOp9tIR9aOTlfllwsD",  # my folder..the code have read access to it(public)..don't change this <<<
                  cred_dir='./utils'
                  ):
         # ----------------------------------------------------------------------------------------
@@ -58,6 +58,7 @@ class DriveManager:
         self.cred_files = sorted(glob.glob(os.path.join(cred_dir, "cred*")))
 
         gauth.LoadCredentialsFile(self.cred_files[0])  # we need this
+        print("Using {} as the main credentials file".format(self.cred_files[0]))
         self.drive = GoogleDrive(gauth)
 
         self.base_projects_dfolder = base_download_dfolder  # this contains my experiments

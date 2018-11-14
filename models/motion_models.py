@@ -236,7 +236,7 @@ class XceptionMotionCNN:
     Xception model used for motion stream which is (input layer >> norm layer >> xception model)
     """
     """
-      pretrained+adam:
+      pretrained+adam: 84.4%
       scratch+adam:
 
       pretrained+MSGD:

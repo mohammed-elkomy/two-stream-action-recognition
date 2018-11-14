@@ -27,6 +27,8 @@ import pickle
 
 from tensorflow.python.keras import Model, Input
 
+import frame_dataloader
+from evaluation import legacy_load_model
 from evaluation.evaluation import *
 from utils.drive_manager import DriveManager
 
@@ -60,7 +62,7 @@ motion_model_with_2_outputs = Model(
 data_loader = frame_dataloader.MotionDataLoaderVisualFeature(
     num_workers=workers, samples_per_video=19,
     width=int(motion_model_restored.inputs[0].shape[1]), height=int(motion_model_restored.inputs[0].shape[2])
-    , use_multiprocessing=False, heavy=False,
+    , use_multiprocessing=False, augmenter_level=0, # heavy augmentation
 )
 train_loader, test_loader = data_loader.run()
 
@@ -68,7 +70,7 @@ train_loader, test_loader = data_loader.run()
 Evaluate and check
 """
 if evaluate:
-    progress = tqdm.tqdm(train_loader.get_epoch_generator(), total=len(train_loader))
+    progress = tqdm.tqdm(test_loader.get_epoch_generator(), total=len(test_loader))
     inp = Input(shape=(2048,), name="dense")
     dense_layer = Model(inp, motion_model_restored.layers[-1].layers[-1](inp))
 

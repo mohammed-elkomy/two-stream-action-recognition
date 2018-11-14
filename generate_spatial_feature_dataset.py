@@ -27,6 +27,8 @@ import pickle
 from tensorflow.keras.models import Model
 from tensorflow.python.keras import Input
 
+import frame_dataloader
+from evaluation import legacy_load_model
 from evaluation.evaluation import *
 from utils.drive_manager import DriveManager
 
@@ -53,7 +55,7 @@ spatial_model_with_2_outputs = Model(
 data_loader = frame_dataloader.SpatialDataLoaderFeature(
     num_workers=workers, samples_per_video=19,
     width=int(spatial_model_restored.inputs[0].shape[1]), height=int(spatial_model_restored.inputs[0].shape[2])
-    , use_multiprocessing=False, heavy=False,
+    , use_multiprocessing=False, augmenter_level=0, # heavy augmentation
 )
 train_loader, test_loader = data_loader.run()
 
@@ -61,7 +63,7 @@ train_loader, test_loader = data_loader.run()
 Evaluate and check
 """
 if evaluate:
-    progress = tqdm.tqdm(train_loader.get_epoch_generator(), total=len(train_loader))
+    progress = tqdm.tqdm(test_loader.get_epoch_generator(), total=len(test_loader))
     inp = Input(shape=(2048,), name="dense")
     dense_layer = Model(inp, spatial_model_restored.layers[-1](inp))
 

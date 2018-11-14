@@ -73,7 +73,7 @@ class MotionSequence(keras.utils.Sequence):
 
 
 class MotionDataLoader:
-    def __init__(self, batch_size, testing_samples_per_video, width, height, num_workers, use_multiprocessing, augmenter_level, log_stream=open("/tmp/null.log", "w"), data_root_path='./tvl1_flow/', ucf_list_path='./UCF_list/', ucf_split='01', queue_size=10, stacked_frames=10):
+    def __init__(self, batch_size, testing_samples_per_video, width, height, num_workers, use_multiprocessing, augmenter_level=1, log_stream=open("/tmp/null.log", "w"), data_root_path='./tvl1_flow/', ucf_list_path='./UCF_list/', ucf_split='01', queue_size=10, stacked_frames=10):
         """
         get the mapping and initialize the augmenter
         """
