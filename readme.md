@@ -63,9 +63,9 @@ Spatial Xception stream | 86.04%|
 Motion Resnet50 stream  | ~75%  | 
 Motion xception stream  | 84.4% | 
 ------------------------|-------|
-Average fusion| 91.25%  | 
+Average fusion| **91.25%**  | 
 ------------------------|-------|
-Recurrent network fusion| 91.7% | 
+Recurrent network fusion| **91.7%** | 
 
 ## Pre-trained Model
 All the pre-trained models could be found [here](https://drive.google.com/drive/folders/1B82anWV8Mb4iHYmOp9tIR9aOTlfllwsD).
