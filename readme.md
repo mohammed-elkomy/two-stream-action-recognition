@@ -42,7 +42,7 @@ Also the dataset is processed and published by [feichtenhofer/twostreamfusion](h
 * Accesses the public models on my drive and you can resume and fine-tune them at different time stamps.
 Where the name of every checkpoint is as follows, **EPOCH.BEST_TOP_1_ACC.CURRENT_TOP_1_ACC**
 for example [this](https://drive.google.com/open?id=1N697z8uvAHICBbFNOJyKn4nbT64rUTcB)
-which is **300-0.84298-0.84166**.zip in folder **heavy-mot-xception-adam-1e-05-imnet**
+which is **300-0.84298-0.84166.zip** in folder **heavy-mot-xception-adam-1e-05-imnet**
 at this checkpoint,
     * **epoch=300**
     * **best top 1 accuracy was 0.84298** (obtained in checkpoint before 300)
@@ -72,7 +72,7 @@ All the pre-trained models could be found [here](https://drive.google.com/drive/
 
 It's the same drive folder accessed by the code while training and resuming training from a checkpoint.
 
-## Reference Paper:
+## Reference Papers:
 * [[1] Two-stream convolutional networks for action recognition in videos](https://arxiv.org/pdf/1406.2199.pdf)
 * [[2] Real-time Action Recognition with Enhanced Motion Vector CNNs](https://arxiv.org/pdf/1604.07669.pdf)
 * [[3] Towards Good Practices for Very Deep Two-Stream ConvNets](https://arxiv.org/pdf/1507.02159.pdf)
