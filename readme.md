@@ -20,7 +20,7 @@ All of these requirements are satisfied by (python3 Colab GPU-enabled instance) 
 
 
 ## Dataset:
-I used UCF101 dataset originally found [here](http://crcv.ucf.edu/data/UCF101/UCF101.rar).
+I used UCF101 dataset originally found [here](https://www.crcv.ucf.edu/datasets/human-actions/ucf101/UCF101.rar).
 
 Also the dataset is processed and published by [feichtenhofer/twostreamfusion](https://github.com/feichtenhofer/twostreamfusion))
   * RGB images(single zip file split into three parts)
