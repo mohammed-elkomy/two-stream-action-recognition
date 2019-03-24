@@ -1,3 +1,5 @@
+![Alt Text](https://gph.is/g/Zyj7Dd4)
+
 # Action Recognition
 In this repo we study the problem of action recognition(recognizing actions in videos) on UCF101 famous dataset.
 
