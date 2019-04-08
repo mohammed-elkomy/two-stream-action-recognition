@@ -1,5 +1,4 @@
-![Demo GIF](https://media.giphy.com/media/XE7UUYZXVtg0N9ruC9/source.gif)
-<img src="https://media.giphy.com/media/vFKqnCdLPNOKc/giphy.gif" width="40" height="40" />
+<img src="https://media.giphy.com/media/XE7UUYZXVtg0N9ruC9/source.gif" align="center" />
 
 # Action Recognition
 In this repo we study the problem of action recognition(recognizing actions in videos) on UCF101 famous dataset.
