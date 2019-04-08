@@ -9,7 +9,7 @@ In this repo we study the problem of action recognition(recognizing actions in v
 Here, I reimplemented two-stream approach for action recognition using pre-trained Xception networks for both streams(Look at references).  
 
 # Live demo on Colab
-Just clone *Live Demo Two-steam net.ipynb* notebook to your drive and run the cells on Colab (Something like the demo gif will be generated in the form of a video)
+Just clone **Live Demo Two-steam net.ipynb** notebook to your drive and run the cells on Google Colab (Something like the demo gif will be generated in video format)
 
 # Get started:
 A full demo of the code in the repo can be found in **Action_Recognition_Walkthrough.ipynb** notebook.
