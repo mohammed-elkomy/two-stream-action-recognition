@@ -1,13 +1,15 @@
-
+# Action Recognition
 
 <p align="center">
   <img src="https://media.giphy.com/media/XE7UUYZXVtg0N9ruC9/source.gif"  />
 </p>
 
-# Action Recognition
 In this repo we study the problem of action recognition(recognizing actions in videos) on UCF101 famous dataset.
 
 Here, I reimplemented two-stream approach for action recognition using pre-trained Xception networks for both streams(Look at references).  
+
+# Live demo on Colab
+Just clone *Live Demo Two-steam net.ipynb* notebook to your drive and run the cells on Colab (Something like the demo gif will be generated in the form of a video)
 
 # Get started:
 A full demo of the code in the repo can be found in **Action_Recognition_Walkthrough.ipynb** notebook.
