@@ -27,7 +27,7 @@ lr = 1e-6
 hidden_state = 128
 feature_field = 2048
 testing_samples_per_video = 19
-epochs = 1000
+epochs = 1200
 save_every = 25
 batch_size = 64
 
@@ -81,7 +81,7 @@ if is_spatial:
 if is_motion:
     drive_manager_motion = DriveManager("motion_feature_dataset")
 
-    test_motion= drive_manager_motion.search_file("test_features_motion.pickle")
+    test_motion = drive_manager_motion.search_file("test_features_motion.pickle")
     train_motion = drive_manager_motion.search_file("train_features_motion.pickle")
 
     if len(test_motion) == 0:
@@ -298,7 +298,7 @@ else:
     initial_epoch = 0
 
 # training
-recurrent_fusion_model.fit_generator(train_generator(),
+recurrent_fusion_model.fit_generator(train_generator(), use_multiprocessing=False,
                                      epochs=epochs, steps_per_epoch=(num_training_samples + batch_size - 1) // batch_size,
                                      validation_data=test_generator(), validation_steps=(num_testing_samples + batch_size - 1) // batch_size,
                                      callbacks=[saver_callback(), keras.callbacks.ReduceLROnPlateau(monitor='val_loss', patience=50, verbose=1, min_lr=lr / 10)],

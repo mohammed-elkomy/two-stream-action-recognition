@@ -12,7 +12,6 @@ import cv2
 import numpy as np
 from imgaug import augmenters as iaa
 from imgaug import parameters as iap
-from tensorflow.python.keras.utils import OrderedEnqueuer
 
 
 def stack_opticalflow(start_frame_index, video_name, data_root_path, stacked_frames):  # returns numpy (h,w,stacked*2) = one sample
@@ -84,64 +83,3 @@ def get_training_augmenter(height, width, augmenter_level):
     ], random_order=True)  # apply augmenters in random order
 
     return aug
-
-
-class SequenceLoader:
-    """
-    efficient pre fetching multiprocessing wrapper
-    """
-
-    def __init__(self, sequence_class, num_workers, queue_size, use_multiprocessing, do_shuffle, **kwargs):
-        self.sequence_class = sequence_class
-        self.kwargs = kwargs
-        self.sequence = None
-        self.parallel_generator = None
-        self.shuffle = do_shuffle
-        self.num_workers = num_workers
-        self.queue_size = queue_size
-        self.use_multiprocessing = use_multiprocessing
-
-        self.reset()
-
-    def __len__(self):
-        """Denotes the number of batches per epoch"""
-        return len(self.sequence)
-
-    def get_actual_length(self):
-        """Denotes the total number of samples"""
-        return self.sequence.get_actual_length()
-
-    def __getitem__(self, index):  # this is linear and inefficient, don't use me
-        return self.sequence[index]
-
-    def reset(self):
-        self.sequence = self.sequence_class(**self.kwargs)
-        enqueuer = OrderedEnqueuer(self.sequence, use_multiprocessing=self.use_multiprocessing)
-        enqueuer.start(workers=self.num_workers, max_queue_size=self.queue_size)
-        self.parallel_generator = enqueuer.get()
-
-        if self.shuffle:
-            self.sequence.shuffle_and_reset()
-
-    def get_epoch_generator(self):  # you can loop on this or send it to generator based training
-        for _ in range(self.__len__()):  # makes sure of length
-            yield next(self.parallel_generator)
-
-        if self.shuffle:
-            self.sequence.shuffle_and_reset()
-
-    def get_sustaining_generator(self):  # you can loop on this or send it to generator based training
-        while True:  # any number of epochs
-            for _ in range(self.__len__()):  # makes sure of length
-                yield next(self.parallel_generator)
-
-            if self.shuffle:
-                self.sequence.shuffle_and_reset()
-
-    def get_epochs_generator(self, epochs):  # you can loop on this or send it to generator based training
-        for _ in range(epochs):  # any number of epochs
-            for _ in range(self.__len__()):  # makes sure of length
-                yield next(self.parallel_generator)
-
-            if self.shuffle:
-                self.sequence.shuffle_and_reset()

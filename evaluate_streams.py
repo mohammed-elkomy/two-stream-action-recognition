@@ -23,9 +23,8 @@ spatial_model_restored.summary()
 
 # evaluate
 _, spatial_test_loader, test_video_level_label = frame_dataloader.SpatialDataLoader(
-    num_workers=workers,
-    width=int(spatial_model_restored.inputs[0].shape[1]), height=int(spatial_model_restored.inputs[0].shape[2])
-    , use_multiprocessing=False, batch_size=get_batch_size(spatial_model_restored, spatial=True), testing_samples_per_video=19
+
+    width=int(spatial_model_restored.inputs[0].shape[1]), height=int(spatial_model_restored.inputs[0].shape[2]), batch_size=get_batch_size(spatial_model_restored, spatial=True), testing_samples_per_video=19
 ).run()
 
 video_level_loss, video_level_accuracy_1, video_level_accuracy_5, test_video_level_preds = eval_model(spatial_model_restored, spatial_test_loader, test_video_level_label, 19)
@@ -45,12 +44,12 @@ motion_model_restored.summary()
 
 # evaluate
 _, motion_test_loader, test_video_level_label = frame_dataloader.MotionDataLoader(
-    num_workers=workers,
+
     width=int(motion_model_restored.inputs[0].shape[1]), height=int(motion_model_restored.inputs[0].shape[2])
-    , use_multiprocessing=False,
+    ,
     batch_size=get_batch_size(motion_model_restored, spatial=True)
     , testing_samples_per_video=19).run()
 
-video_level_loss, video_level_accuracy_1, video_level_accuracy_5, test_video_level_preds = eval_model(motion_model_restored, motion_test_loader, test_video_level_label, 19)
+video_level_loss, video_level_accuracy_1, video_level_accuracy_5, _ = eval_model(motion_model_restored, motion_test_loader, test_video_level_label, 19)
 
 print("Motion Model validation", "prec@1", video_level_accuracy_1, "prec@5", video_level_accuracy_5, "loss", video_level_loss)

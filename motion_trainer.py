@@ -52,9 +52,7 @@ MotionValidationCallback = partial(eval_globals.get_validation_callback,
                                    pred_file=pred_file, h5py_file=h5py_file, drive_manager=drive_manager, log_file=log_file)
 
 data_loader = partial(frame_dataloader.MotionDataLoader,
-                      num_workers=workers,
                       testing_samples_per_video=testing_samples_per_video,
-                      use_multiprocessing=False,
                       augmenter_level=augmenter_level,
                       log_stream=log_stream, stacked_frames=stacked_frames)
 
@@ -72,10 +70,10 @@ if checkpoint_found:
                                                                                               spatial=False)).run()
 
     # training
-    motion_model_restored.fit_generator(train_loader.get_sustaining_generator(),
+    motion_model_restored.fit_generator(train_loader,
                                         steps_per_epoch=len(train_loader),  # generates a batch per step
                                         epochs=epochs,
-                                        use_multiprocessing=False, workers=workers,
+                                        use_multiprocessing=True, workers=workers,
                                         # validation_data=gen_test(), validation_steps=len(test_loader.dataset)
                                         callbacks=[MotionValidationCallback(model=motion_model_restored, test_loader=test_loader, test_video_level_label=test_video_level_label),  # returns callback instance
                                                    keras.callbacks.ReduceLROnPlateau(monitor='val_loss', patience=validate_every, verbose=1)],
@@ -111,10 +109,10 @@ else:
     log_stream.flush()
 
     # training
-    keras_motion_model.fit_generator(train_loader.get_sustaining_generator(),
+    keras_motion_model.fit_generator(train_loader,
                                      steps_per_epoch=len(train_loader),  # generates a batch per step
                                      epochs=epochs,
-                                     use_multiprocessing=False, workers=workers,
+                                     use_multiprocessing=True, workers=workers,
                                      # validation_data=gen_test(), validation_steps=len(test_loader.dataset)
                                      callbacks=[MotionValidationCallback(model=keras_motion_model, test_loader=test_loader, test_video_level_label=test_video_level_label),  # returns callback instance
                                                 keras.callbacks.ReduceLROnPlateau(monitor='val_loss', patience=validate_every * 10, verbose=1)],

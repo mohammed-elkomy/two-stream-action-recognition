@@ -52,7 +52,7 @@ def eval_model(model, test_loader, test_video_level_label, testing_samples_per_v
     """
     runs a progressor showing my custom validation per epoch, returning the metrics
     """
-    progress = tqdm.tqdm(test_loader.get_epoch_generator(), total=len(test_loader))
+    progress = tqdm.tqdm(test_loader, total=len(test_loader))
     test_video_level_preds = defaultdict(lambda: np.zeros((num_actions,)))
 
     for video_names, sampled_frame in progress:  # i don't need frame level labels

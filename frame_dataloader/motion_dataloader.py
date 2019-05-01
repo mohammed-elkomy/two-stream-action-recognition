@@ -6,26 +6,26 @@ Motion Dataloader implementing sequence api from keras (defines how to load a si
 this loads batches of images for each iteration it returns [batch_size, height, width ,stacked_frames*2] ndarrays
 2*stacked_frames since we have u,v optical flow
 """
-
+import copy
 import random
 import sys
 
 import numpy as np
 import tensorflow.keras as keras
 
-from .helpers import stack_opticalflow, get_training_augmenter, get_validation_augmenter, SequenceLoader
 from .UCF_splitting_kernel import *
+from .helpers import stack_opticalflow, get_training_augmenter, get_validation_augmenter
 
 
 class MotionSequence(keras.utils.Sequence):
     def __init__(self, data_to_load, data_root_path, batch_size, is_training, augmenter, stacked_frames):
         """get data structure to load data"""
         # list of (video names,frame/max_frame,label)
-        self.data_to_load = data_to_load
+        self.data_to_load = copy.deepcopy(data_to_load)
         self.batch_size = batch_size
         self.is_training = is_training
 
-        self.augmenter = augmenter
+        self.augmenter = copy.deepcopy(augmenter)
 
         self.data_root_path = data_root_path
         self.stacked_frames = stacked_frames
@@ -73,15 +73,11 @@ class MotionSequence(keras.utils.Sequence):
 
 
 class MotionDataLoader:
-    def __init__(self, batch_size, testing_samples_per_video, width, height, num_workers, use_multiprocessing, augmenter_level=1, log_stream=open("/tmp/null.log", "w"), data_root_path='./tvl1_flow/', ucf_list_path='./UCF_list/', ucf_split='01', queue_size=10, stacked_frames=10):
+    def __init__(self, batch_size, testing_samples_per_video, width, height, augmenter_level=1, log_stream=open("/tmp/null.log", "w"), data_root_path='./tvl1_flow/', ucf_list_path='./UCF_list/', ucf_split='01', stacked_frames=10):
         """
         get the mapping and initialize the augmenter
         """
         self.batch_size = batch_size
-        self.use_multiprocessing = use_multiprocessing
-        self.queue_size = queue_size
-        self.num_workers = num_workers
-
         self.width, self.height = width, height
         self.stacked_frames = stacked_frames
         self.data_root_path = data_root_path
@@ -137,48 +133,36 @@ class MotionDataLoader:
         """
         an instance of sequence loader for motion model for parallel dataloading using keras sequence
         """
-        loader = SequenceLoader(sequence_class=MotionSequence,
-                                queue_size=self.queue_size,
-                                num_workers=self.num_workers,
-                                use_multiprocessing=self.use_multiprocessing,
-                                do_shuffle=True,
-                                # params of sequence (data_to_load, data_root_path, batch_size, is_training, augmenter)
-                                data_to_load=self.get_training_data_structure(),
+        loader = MotionSequence(data_to_load=self.get_training_data_structure(),
                                 data_root_path=self.data_root_path,
                                 batch_size=self.batch_size,
                                 is_training=True,
                                 augmenter=get_training_augmenter(height=self.height, width=self.width, augmenter_level=self.augmenter_level),
                                 stacked_frames=self.stacked_frames
                                 )
-        print('==> Training data :', len(loader.sequence.data_to_load), 'videos', file=self.log_stream)
-        print('==> Validation data :', len(loader.sequence.data_to_load), 'frames')
+
+        print('==> Training data :', len(loader.data_to_load), 'videos', file=self.log_stream)
+        print('==> Training data :', len(loader.data_to_load), 'videos')
         return loader
 
     def get_testing_loader(self):
         """
         an instance of sequence loader for motion model for parallel dataloading using keras sequence
         """
-        loader = SequenceLoader(sequence_class=MotionSequence,
-                                queue_size=self.queue_size,
-                                num_workers=self.num_workers,
-                                use_multiprocessing=self.use_multiprocessing,
-                                do_shuffle=False,
-                                # params of sequence (data_to_load, data_root_path, batch_size, is_training, augmenter)
-                                data_to_load=self.get_testing_data_structure(),
+        loader = MotionSequence(data_to_load=self.get_testing_data_structure(),
                                 data_root_path=self.data_root_path,
                                 batch_size=self.batch_size,
                                 is_training=False,
                                 augmenter=get_validation_augmenter(height=self.height, width=self.width),
-                                stacked_frames=self.stacked_frames
-                                )
+                                stacked_frames=self.stacked_frames)
 
-        print('==> Validation data :', len(loader.sequence.data_to_load), 'frames', file=self.log_stream)
-        print('==> Validation data :', len(loader.sequence.data_to_load), 'frames')
+        print('==> Validation data :', len(loader.data_to_load), 'frames', file=self.log_stream)
+        print('==> Validation data :', len(loader.data_to_load), 'frames')
         return loader
 
 
 if __name__ == '__main__':
-    data_loader = MotionDataLoader(batch_size=64, use_multiprocessing=False,
+    data_loader = MotionDataLoader(batch_size=64, use_multiprocessing=True,
                                    testing_samples_per_video=19, width=224, height=224, num_workers=1, log_stream=sys.stdout, augmenter_level=1)
     train_loader, test_loader, test_video_level_label = data_loader.run()
 

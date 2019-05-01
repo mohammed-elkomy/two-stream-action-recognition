@@ -52,9 +52,7 @@ SpatialValidationCallback = partial(eval_globals.get_validation_callback,
                                     pred_file=pred_file, h5py_file=h5py_file, drive_manager=drive_manager, log_file=log_file)
 
 data_loader = partial(frame_dataloader.SpatialDataLoader,
-                      num_workers=workers,
                       testing_samples_per_video=testing_samples_per_video,
-                      use_multiprocessing=False,
                       augmenter_level=augmenter_level,
                       log_stream=log_stream)
 
@@ -69,10 +67,10 @@ if checkpoint_found:
     train_loader, test_loader, test_video_level_label = data_loader(width=int(spatial_model_restored.inputs[0].shape[1]), height=int(spatial_model_restored.inputs[0].shape[2]), batch_size=get_batch_size(spatial_model_restored, spatial=True)).run()
 
     # training
-    spatial_model_restored.fit_generator(train_loader.get_sustaining_generator(),
+    spatial_model_restored.fit_generator(train_loader,
                                          steps_per_epoch=len(train_loader),  # generates a batch per step
                                          epochs=epochs,
-                                         use_multiprocessing=False, workers=workers,
+                                         use_multiprocessing=True, workers=workers,
                                          # validation_data=gen_test(), validation_steps=len(test_loader.dataset)
                                          callbacks=[SpatialValidationCallback(model=spatial_model_restored, test_loader=test_loader, test_video_level_label=test_video_level_label),  # returns callback instance
                                                     keras.callbacks.ReduceLROnPlateau(monitor='val_loss', patience=validate_every, verbose=1)],
@@ -104,10 +102,10 @@ else:
     log_stream.flush()
 
     # training
-    keras_spatial_model.fit_generator(train_loader.get_sustaining_generator(),
+    keras_spatial_model.fit_generator(train_loader,
                                       steps_per_epoch=len(train_loader),  # generates a batch per step
                                       epochs=epochs,
-                                      use_multiprocessing=False, workers=workers,
+                                      use_multiprocessing=True, workers=workers,
                                       # validation_data=gen_test(), validation_steps=len(test_loader.dataset)
                                       callbacks=[SpatialValidationCallback(model=keras_spatial_model, test_loader=test_loader, test_video_level_label=test_video_level_label),  # returns callback instance
                                                  keras.callbacks.ReduceLROnPlateau(monitor='val_loss', patience=validate_every, verbose=1)],

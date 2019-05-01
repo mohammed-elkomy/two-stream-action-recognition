@@ -5,26 +5,26 @@
 Spatial Dataloader implementing sequence api from keras (defines how to load a single item)
 this loads batches of images for each iteration it returns [batch_size, height, width ,3] ndarrays
 """
-
+import copy
 import random
 
 import cv2
 import numpy as np
 import tensorflow.keras as keras
 
-from .helpers import get_training_augmenter, get_validation_augmenter, SequenceLoader
 from .UCF_splitting_kernel import *
+from .helpers import get_training_augmenter, get_validation_augmenter
 
 
 class SpatialSequence(keras.utils.Sequence):
     def __init__(self, data_to_load, data_root_path, batch_size, is_training, augmenter):
         """get data structure to load data"""
         # list of (video names,frame/max_frame,label)
-        self.data_to_load = data_to_load
+        self.data_to_load = copy.deepcopy(data_to_load)
         self.batch_size = batch_size
         self.is_training = is_training
 
-        self.augmenter = augmenter
+        self.augmenter = copy.deepcopy(augmenter)
 
         self.data_root_path = data_root_path
 
@@ -71,15 +71,11 @@ class SpatialSequence(keras.utils.Sequence):
 
 
 class SpatialDataLoader:
-    def __init__(self, batch_size, testing_samples_per_video, width, height, num_workers, use_multiprocessing, log_stream=open("/tmp/null.log", "w"), augmenter_level=1, data_root_path='./jpegs_256/', ucf_list_path='./UCF_list/', ucf_split='01', queue_size=10):
+    def __init__(self, batch_size, testing_samples_per_video, width, height, log_stream=open("/tmp/null.log", "w"), augmenter_level=1, data_root_path='./jpegs_256/', ucf_list_path='./UCF_list/', ucf_split='01'):
         """
         get the mapping and initialize the augmenter
         """
         self.batch_size = batch_size
-        self.use_multiprocessing = use_multiprocessing
-        self.queue_size = queue_size
-        self.num_workers = num_workers
-
         self.width, self.height = width, height
         self.data_root_path = data_root_path
         self.testing_samples_per_video = testing_samples_per_video
@@ -135,46 +131,36 @@ class SpatialDataLoader:
         """
         an instance of sequence loader for spatial model for parallel dataloading using keras sequence
         """
-        loader = SequenceLoader(sequence_class=SpatialSequence,
-                                queue_size=self.queue_size,
-                                num_workers=self.num_workers,
-                                use_multiprocessing=self.use_multiprocessing,
-                                do_shuffle=True,
-                                # params of sequence (data_to_load, data_root_path, batch_size, is_training, augmenter)
-                                data_to_load=self.get_training_data_structure(),
-                                data_root_path=self.data_root_path,
-                                batch_size=self.batch_size,
-                                is_training=True,
-                                augmenter=get_training_augmenter(height=self.height, width=self.width, augmenter_level=self.augmenter_level),
-                                )
-        print('==> Training data :', len(loader.sequence.data_to_load), 'videos', file=self.log_stream)
-        print('==> Training data :', len(loader.sequence.data_to_load), 'videos')
+        loader = SpatialSequence(data_to_load=self.get_training_data_structure(),
+                                 data_root_path=self.data_root_path,
+                                 batch_size=self.batch_size,
+                                 is_training=True,
+                                 augmenter=get_training_augmenter(height=self.height, width=self.width, augmenter_level=self.augmenter_level),
+                                 )
+
+        print('==> Training data :', len(loader.data_to_load), 'videos', file=self.log_stream)
+        print('==> Training data :', len(loader.data_to_load), 'videos')
         return loader
 
     def get_testing_loader(self):
         """
         an instance of sequence loader for spatial model for parallel dataloading using keras sequence
         """
-        loader = SequenceLoader(sequence_class=SpatialSequence,
-                                queue_size=self.queue_size,
-                                num_workers=self.num_workers,
-                                use_multiprocessing=self.use_multiprocessing,
-                                do_shuffle=False,
-                                # params of sequence (data_to_load, data_root_path, batch_size, is_training, augmenter)
-                                data_to_load=self.get_testing_data_structure(),
-                                data_root_path=self.data_root_path,
-                                batch_size=self.batch_size,
-                                is_training=False,
-                                augmenter=get_validation_augmenter(height=self.height, width=self.width),
-                                )
 
-        print('==> Validation data :', len(loader.sequence.data_to_load), 'frames', file=self.log_stream)
-        print('==> Validation data :', len(loader.sequence.data_to_load), 'frames')
+        loader = SpatialSequence(data_to_load=self.get_testing_data_structure(),
+                                 data_root_path=self.data_root_path,
+                                 batch_size=self.batch_size,
+                                 is_training=False,
+                                 augmenter=get_validation_augmenter(height=self.height, width=self.width),
+                                 )
+
+        print('==> Validation data :', len(loader.data_to_load), 'frames', file=self.log_stream)
+        print('==> Validation data :', len(loader.data_to_load), 'frames')
         return loader
 
 
 if __name__ == '__main__':
-    data_loader = SpatialDataLoader(batch_size=64, use_multiprocessing=False,  # data_root_path="data",
+    data_loader = SpatialDataLoader(batch_size=64, use_multiprocessing=True,  # data_root_path="data",
                                     ucf_split='01',
                                     testing_samples_per_video=19, width=224, height=224, num_workers=2)
     train_loader, test_loader, test_video_level_label = data_loader.run()
