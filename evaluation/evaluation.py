@@ -35,20 +35,20 @@ acc_top_5_op = keras.backend.mean(keras.metrics.sparse_top_k_categorical_accurac
 def acc_top_5(y_true, y_pred):
     """Helper function for top-5 accuracy reported in UCF"""
     print(y_true,y_pred)
-    return tf.keras.metrics.sparse_top_k_categorical_accuracy(y_true, y_pred, k=5)
+    return keras.backend.mean((tf.keras.metrics.sparse_top_k_categorical_accuracy(y_true, y_pred, k=5)))
 
 
 def acc_top_1(y_true, y_pred):
     """Helper function for top-1 accuracy/(traditional accuracy) reported in UCF"""
     print(y_true, y_pred)
-    return tf.keras.metrics.sparse_top_k_categorical_accuracy(y_true, y_pred, k=1)
+    return keras.backend.mean((tf.keras.metrics.sparse_top_k_categorical_accuracy(y_true, y_pred, k=1)))
 
 
 # compile the model (should be done *after* setting layers to non-trainable)
 def sparse_categorical_cross_entropy_loss(y_true, y_pred):
     """Custom loss function:I changed it a little bit but observed no difference"""
     print(y_true, y_pred)
-    return keras.losses.sparse_categorical_crossentropy(y_true, y_pred)
+    return keras.backend.mean(keras.losses.sparse_categorical_crossentropy(y_true, y_pred))
 
 
 def eval_model(model, test_loader, test_video_level_label, testing_samples_per_video):
