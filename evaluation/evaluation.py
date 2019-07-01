@@ -73,7 +73,7 @@ def eval_model(model, test_loader, test_video_level_label, testing_samples_per_v
 
 def video_level_eval(test_video_level_preds, test_video_level_label, testing_samples_per_video):
     """
-    video level validation applying accuracy scoring top-5 and top-1 using predictions and labels feeded as dictionaries
+    video level validation applying accuracy scoring top-5 and top-1 using predictions and labels fed as dictionaries
     """
     video_level_preds_np = np.zeros((len(test_video_level_preds), num_actions))  # each video per 101 class (prediction)
     video_level_labels_np = np.zeros((len(test_video_level_preds), 1))
