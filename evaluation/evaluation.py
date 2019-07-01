@@ -28,8 +28,8 @@ video_level_preds_k = keras.backend.placeholder([None, num_actions], dtype=tf.fl
 
 # tensors representing top-1 top-5 and cost function in symbolic form
 val_loss_op = keras.backend.mean(keras.metrics.sparse_categorical_crossentropy(video_level_labels_k, video_level_preds_k))
-acc_top_1_op = keras.metrics.sparse_top_k_categorical_accuracy(video_level_labels_k, video_level_preds_k, k=1)
-acc_top_5_op = keras.metrics.sparse_top_k_categorical_accuracy(video_level_labels_k, video_level_preds_k, k=5)
+acc_top_1_op = keras.backend.mean(keras.metrics.sparse_top_k_categorical_accuracy(video_level_labels_k, video_level_preds_k, k=1))
+acc_top_5_op = keras.backend.mean(keras.metrics.sparse_top_k_categorical_accuracy(video_level_labels_k, video_level_preds_k, k=5))
 
 
 def acc_top_5(y_true, y_pred):
