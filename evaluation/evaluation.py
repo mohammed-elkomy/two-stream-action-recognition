@@ -34,16 +34,15 @@ acc_top_5_op = keras.backend.mean(keras.metrics.sparse_top_k_categorical_accurac
 
 def acc_top_5(y_true, y_pred):
     """Helper function for top-5 accuracy reported in UCF"""
-    y_true = keras.backend.cast(y_true, dtype='float32')
-    y_pred = keras.backend.cast(y_pred, dtype='float32')
+    y_true = keras.backend.cast(y_true, dtype='int32')
+
     return keras.backend.mean((tf.keras.metrics.sparse_top_k_categorical_accuracy(y_true, y_pred, k=5)))
 
 
 def acc_top_1(y_true, y_pred):
     """Helper function for top-1 accuracy/(traditional accuracy) reported in UCF"""
     print(y_true, y_pred)
-    y_true = keras.backend.cast(y_true, dtype='float32')
-    y_pred = keras.backend.cast(y_pred, dtype='float32')
+    y_true = keras.backend.cast(y_true, dtype='int32')
     return keras.backend.mean((tf.keras.metrics.sparse_top_k_categorical_accuracy(y_true, y_pred, k=1)))
 
 
@@ -51,8 +50,7 @@ def acc_top_1(y_true, y_pred):
 def sparse_categorical_cross_entropy_loss(y_true, y_pred):
     """Custom loss function:I changed it a little bit but observed no difference"""
     print(y_true, y_pred)
-    y_true = keras.backend.cast(y_true, dtype='float32')
-    y_pred = keras.backend.cast(y_pred, dtype='float32')
+    y_true = keras.backend.cast(y_true, dtype='int32')
     return keras.backend.mean(keras.losses.sparse_categorical_crossentropy(y_true, y_pred))
 
 
