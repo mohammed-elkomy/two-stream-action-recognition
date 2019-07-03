@@ -19,6 +19,22 @@ def get_validation_callback(log_stream, validate_every, model, test_loader, test
     """
 
     class ValidationCallback(tf.keras.callbacks.Callback):
+        def on_batch_end(self, batch, logs={}):
+            self.seen += logs.get('size', 0)
+            if self.seen % self.display == 0:
+                metrics_log = ''
+                for k in self.params['metrics']:
+                    if k in logs:
+                        val = logs[k]
+                        if abs(val) > 1e-3:
+                            metrics_log += ' - %s: %.4f' % (k, val)
+                        else:
+                            metrics_log += ' - %s: %.4e' % (k, val)
+                print('{}/{} ... {}'.format(self.seen,
+                                            self.params['samples'],
+                                            metrics_log))
+                print("="*50)
+
         def on_epoch_end(self, epoch, logs=None):
             """
             View validation metrics every "validate_every" epochs
