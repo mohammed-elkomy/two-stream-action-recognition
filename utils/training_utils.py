@@ -20,8 +20,7 @@ def get_validation_callback(log_stream, validate_every, model, test_loader, test
 
     class ValidationCallback(tf.keras.callbacks.Callback):
         def on_batch_end(self, batch, logs={}):
-            self.seen += logs.get('size', 0)
-            if self.seen % self.display == 0:
+            if self.display == 0:
                 metrics_log = ''
                 for k in self.params['metrics']:
                     if k in logs:
