@@ -29,9 +29,11 @@ def get_validation_callback(log_stream, validate_every, model, test_loader, test
                         metrics_log += ' - %s: %.4f' % (k, val)
                     else:
                         metrics_log += ' - %s: %.4e' % (k, val)
-            print('{}/{} ... {}'.format(self.seen,
+            print('{} ... {}'.format(
                                         self.params['samples'],
                                         metrics_log))
+
+            print(type(batch),batch.shape)
             print("="*50)
 
         def on_epoch_end(self, epoch, logs=None):
