@@ -33,7 +33,7 @@ def get_validation_callback(log_stream, validate_every, model, test_loader, test
                                         self.params['samples'],
                                         metrics_log))
 
-            print(type(batch),batch.shape)
+            print(type(batch))
             print("="*50)
 
         def on_epoch_end(self, epoch, logs=None):
