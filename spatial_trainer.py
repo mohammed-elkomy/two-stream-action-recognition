@@ -65,8 +65,8 @@ if checkpoint_found:
 
     # init data loader
     train_loader, test_loader, test_video_level_label = data_loader(width=int(spatial_model_restored.inputs[0].shape[1]), height=int(spatial_model_restored.inputs[0].shape[2]), batch_size=get_batch_size(spatial_model_restored, spatial=True)).run()
-    
-    keras_spatial_model.compile(optimizer=keras.optimizers.Adam(lr=lr) if is_adam else keras.optimizers.SGD(lr=lr, momentum=0.9), loss=keras.losses.sparse_categorical_crossentropy, metrics=[acc_top_1, acc_top_5])
+
+    spatial_model_restored.compile(optimizer=keras.optimizers.Adam(lr=lr) if is_adam else keras.optimizers.SGD(lr=lr, momentum=0.9), loss=keras.losses.sparse_categorical_crossentropy, metrics=[acc_top_1, acc_top_5])
 
     # training
     spatial_model_restored.fit_generator(train_loader,
