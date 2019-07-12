@@ -61,9 +61,11 @@ def eval_model(model, test_loader, test_video_level_label, testing_samples_per_v
     print("loader",len(test_loader))
     progress = tqdm.tqdm(test_loader, total=len(test_loader))
     test_video_level_preds = defaultdict(lambda: np.zeros((num_actions,)))
-
-    for video_names, sampled_frame in progress:  # i don't need frame level labels
-
+  
+    for i,(video_names, sampled_frame) in enumerate(progress):  # i don't need frame level labels
+        if i == len(progress):
+            break
+            
         frame_preds = model.predict_on_batch(sampled_frame)
         _batch_size = frame_preds.shape[0]  # last batch wont be batch_size :3
 
