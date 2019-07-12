@@ -66,8 +66,6 @@ if checkpoint_found:
     # init data loader
     train_loader, test_loader, test_video_level_label = data_loader(width=int(spatial_model_restored.inputs[0].shape[1]), height=int(spatial_model_restored.inputs[0].shape[2]), batch_size=get_batch_size(spatial_model_restored, spatial=True)).run()
 
-    spatial_model_restored.compile(optimizer=keras.optimizers.Adam(lr=lr) if is_adam else keras.optimizers.SGD(lr=lr, momentum=0.9), loss=keras.losses.sparse_categorical_crossentropy, metrics=[acc_top_1, acc_top_5])
-
     # training
     spatial_model_restored.fit_generator(train_loader,
                                          steps_per_epoch=len(train_loader),  # generates a batch per step
@@ -97,7 +95,7 @@ else:
     # init data loader
     train_loader, test_loader, test_video_level_label = data_loader(**model.get_loader_configs()).run()  # batch_size, width , height)
 
-    keras_spatial_model.compile(optimizer=keras.optimizers.Adam(lr=lr) if is_adam else keras.optimizers.SGD(lr=lr, momentum=0.9), loss=keras.losses.sparse_categorical_crossentropy, metrics=[acc_top_1, acc_top_5])
+    keras_spatial_model.compile(optimizer=keras.optimizers.Adam(lr=lr) if is_adam else keras.optimizers.SGD(lr=lr, momentum=0.9), loss=sparse_categorical_cross_entropy_loss, metrics=[acc_top_1, acc_top_5])
 
     keras_spatial_model.summary(print_fn=lambda *args: print(args, file=log_stream))
     keras_spatial_model.summary()
