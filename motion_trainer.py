@@ -30,7 +30,7 @@ from utils.drive_manager import DriveManager
 
 ################################################################################
 """Files, paths & identifier"""
-suffix = "hater"  # put your name or anything(your crush :3) :D
+suffix = ""  # put your name or anything(your crush :3) :D
 experiment_identifier = suffix + ("" if suffix == "" else "-") + get_augmenter_text(augmenter_level) + "-mot-" + model_name + "-" + ("adam" if is_adam else "SGD") + "-" + str(lr) + "-" + ("imnet" if pretrained else "scrat")
 log_file = "motion.log"
 log_stream = open("motion.log", "a")
