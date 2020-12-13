@@ -1,4 +1,4 @@
-# Action Recognition
+# Action Recognition [no longer maintained]
 
 <p align="center">
   <img src="https://media.giphy.com/media/XE7UUYZXVtg0N9ruC9/source.gif"  />
